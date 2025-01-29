@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <script>
+      //<Description> Allows you drag handles and copy code for drawing a Triangle. </Description>
+
+var centerOffset = 0;
+var offsetX = 0; 
+var offsetY = 0; 
+offsetX += centerOffset; 
+offsetY += centerOffset; 
+
+var lineThickness = 2;
+
+var which = 0;
+
+translate(offsetX, offsetY);
+rotate(0);
+
+var dragCircles = [];
+
+// When function is called, "push" a new Array entry
+var createCircle = function(cX,cY){
+    dragCircles.push({
+        x:cX,
+        y:cY,
+        mouseOver: false,
+        circleSize: 12
+    });
+};
+
+var drawDraggableCircles = function(){
+    strokeWeight(1);
+// Cycle through the Array and draw a Circle for each entry
+    for (var i = 0; i < dragCircles.length; i++){
+if(dist(dragCircles[i].x, dragCircles[i].y, mouseX-offsetX, mouseY-offsetY) < dragCircles[i].circleSize/1.5 && (!which || which === i+1)){
+            fill (128, 0, 255, 120); 
+        }
+        else{ 
+            noFill(); 
+        }
+        ellipse(dragCircles[i].x, dragCircles[i].y, dragCircles[i].circleSize, dragCircles[i].circleSize);
+    }
+};
+
+mouseDragged = function(){
+    if(!which) {
+        // Cycle through the Array
+        for (var i = 0; i < dragCircles.length; i++){
+            // If Radius Collision Detected...
+            if (dist(dragCircles[i].x, dragCircles[i].y, 
+                mouseX-offsetX, mouseY-offsetY) < dragCircles[i].circleSize/1.5 ){
+                which = i + 1;
+                break;
+            }
+        }
+    } else {
+        // Move Circle to current Mouse Position
+        dragCircles[which - 1].x = mouseX-offsetX;
+        dragCircles[which - 1].y = mouseY-offsetY;
+    }
+        var s = "Copy text here :)\n\n triangle(" + dragCircles[0].x + ", " + dragCircles[0].y + ", "+ dragCircles[1].x + ", " + dragCircles[1].y + ", "+ dragCircles[2].x + ", " + dragCircles[2].y + "); \n\n";
+
+    println(s);
+};
+
+mouseReleased = function() {
+    which = 0;
+};
+
+var displayText = function(){
+textSize(12);
+fill(0, 0, 0, 100);
+// Display Numbers
+// Y Axis
+text(" Y", 5, 50); 
+text("100", 5, 100); text("150", 5, 150); text("200", 5, 200); 
+text("250", 5, 250); text("300", 5, 300); text("350", 5, 350); 
+
+// X Axis
+text("X", 50, 15); 
+text("100", 100, 15); text("150", 150, 15); text("200", 200, 15); 
+text("250", 250, 15); text("300", 300, 15); text("350", 350, 15);
+stroke(0); // Restore stroke to normal
+};
+
+var drawGrid = function(){
+    strokeWeight(1); // Line Thickness
+    stroke(0, 0, 0, 160);
+    // Draw Black Crosshair Lines at 0,0
+    line(0, -400, 0, 400); // Y Axis Line
+    line(-400, 0, 400, 0); // X Axis Line
+
+    // Draw Blue Grid
+    stroke(0, 100, 255, 75); // Opaque Blue
+    for(var i = -400; i < 400 ; i = i + 10){
+        line(i, -400, i, 400);
+        line(-400, i, 400, i);
+    }
+};
+
+createCircle(200, 120); 
+createCircle(250, 212);
+createCircle(150, 212); 
+
+// Begin Game Loop
+draw = function(){
+background(255); // Clear the Screen White
+
+drawGrid();
+displayText(); 
+
+drawDraggableCircles();
+
+fill(0, 0, 255, 60);
+strokeWeight(lineThickness);
+triangle(dragCircles[0].x, dragCircles[0].y, dragCircles[1].x, dragCircles[1].y ,dragCircles[2].x, dragCircles[2].y);
+
+
+}; // end Game Loop
+
+/* Tutorials in plain English by Dillinger © 2012. 
+All code is owned by its respective author and made available under an MIT license:
+http://opensource.org/licenses/mit-license.php */
+    </script>
+  </body>
+</html>
